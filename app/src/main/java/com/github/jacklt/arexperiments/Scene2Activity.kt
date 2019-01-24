@@ -32,7 +32,7 @@ class Scene2Activity : SceneformActivity() {
 
                         if (distance < 0.3) {
                             // WITHOUT animation
-                            // ball.localPosition += Quaternion.rotateVector(camera.localRotation, Vector3.forward() * 0.3f)
+                            // ball.localPosition += camera.forward * 0.3f
 
                             // WITH animation
                             ball.localPositionAnimator(camera.forward).apply { duration = 500 }.start()
