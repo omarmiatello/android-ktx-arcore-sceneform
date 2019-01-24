@@ -1,21 +1,23 @@
-package com.github.jacklt.arexperiments
+package com.github.jacklt.arexperiments.generic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.github.jacklt.arexperiments.R
 import com.google.ar.core.HitResult
+import com.google.ar.core.Pose
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.NodeParent
-import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.Material
 import com.google.ar.sceneform.rendering.MaterialFactory
-import com.google.ar.sceneform.rendering.ShapeFactory
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import kotlinx.coroutines.*
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.*
+
 
 abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
     protected lateinit var job: Job
@@ -24,14 +26,18 @@ abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
     protected lateinit var arFragment: ArFragment
         private set
 
+    protected lateinit var arSceneView: ArSceneView
+        private set
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         job = Job()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_sceneform)
         arFragment = supportFragmentManager.findFragmentById(R.id.ar_fragment) as ArFragment
+        arSceneView = arFragment.arSceneView
         onInitSceneform()
     }
 
@@ -48,9 +54,16 @@ abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    fun Pose.anchorNode(init: suspend AnchorNode.() -> Unit): AnchorNode {
+        return AnchorNode(arSceneView.session.createAnchor(this)).apply {
+            setParent(arSceneView.scene)
+            launch { init(this@apply) }
+        }
+    }
+
     fun HitResult.anchorNode(init: suspend AnchorNode.() -> Unit): AnchorNode {
         return AnchorNode(createAnchor()).apply {
-            setParent(arFragment.arSceneView.scene)
+            setParent(arSceneView.scene)
             launch { init(this@apply) }
         }
     }
@@ -75,41 +88,5 @@ abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
             setParent(this@node)
             coroutineScope { init(this@apply) }
         }
-    }
-
-    suspend inline fun NodeParent.box(
-        width: Float,
-        height: Float,
-        depth: Float,
-        thick: Float,
-        material: Material
-    ) = node {
-        // left
-        node().renderable = ShapeFactory.makeCube(
-            Vector3(thick, height, depth),
-            Vector3((thick - width) / 2, height / 2, 0f),
-            material
-        )
-
-        // right
-        node().renderable = ShapeFactory.makeCube(
-            Vector3(thick, height, depth),
-            Vector3((width - thick) / 2, height / 2, 0f),
-            material
-        )
-
-        // top
-        node().renderable = ShapeFactory.makeCube(
-            Vector3(width, height, thick),
-            Vector3(0.0f, height / 2, (thick - depth) / 2),
-            material
-        )
-
-        // bottom
-        node().renderable = ShapeFactory.makeCube(
-            Vector3(width, height, thick),
-            Vector3(0.0f, height / 2, (depth - thick) / 2),
-            material
-        )
     }
 }

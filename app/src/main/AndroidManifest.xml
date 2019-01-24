@@ -37,6 +37,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Scene1Activity" />
+
+        <activity android:name=".Scene2Activity" />
+        <activity android:name=".Scene3Activity" />
+
         <!-- Indicates that app requires ARCore ("AR Required"). Causes Google
              Play Store to download and install ARCore when the app is installed.
         -->
