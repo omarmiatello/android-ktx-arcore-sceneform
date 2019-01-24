@@ -14,36 +14,19 @@ import com.google.ar.sceneform.rendering.ShapeFactory
 
 class Scene2Activity : SceneformActivity() {
     override fun onInitSceneform() {
-        val camera = arSceneView.scene.camera
         arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
             hitResult.anchorNode {
-                val red = material(Color(1f, 0f, 0f))
                 transformableNode {
                     parallelPlanes(1f, 0.8f, 1f, 0.01f, material(Color(0f, 0f, 1f, .2f)))
-
-                    val ball = node {
-                        renderable = ShapeFactory.makeSphere(0.01f, Vector3(0.0f, 0.0f, 0.0f), red)
+                    ball(material(Color(1f, 0f, 0f))).apply {
                         localPosition = Vector3(0f, .3f, 0f)
-                    }
-
-                    ball.addOnUpdateInMills {
-                        val distance = (camera.worldPosition - ball.worldPosition).length()
-                        ball.renderable.material.setFloat3(MaterialFactory.MATERIAL_COLOR, distance.distanceToColor())
-
-                        if (distance < 0.3) {
-                            // WITHOUT animation
-                            // ball.localPosition += camera.forward * 0.3f
-
-                            // WITH animation
-                            ball.localPositionAnimator(camera.forward).apply { duration = 500 }.start()
-                        }
                     }
                 }
             }
         }
     }
 
-    private suspend inline fun NodeParent.parallelPlanes(
+    private suspend fun NodeParent.parallelPlanes(
         width: Float,
         height: Float,
         depth: Float,
@@ -65,6 +48,24 @@ class Scene2Activity : SceneformActivity() {
                 isShadowCaster = false
                 isShadowReceiver = false
             }
+    }
+
+    private suspend fun NodeParent.ball(red: Material) = node {
+        renderable = ShapeFactory.makeSphere(0.01f, Vector3(0.0f, 0.0f, 0.0f), red)
+
+        val camera = arSceneView.scene.camera
+        addOnUpdateInMills {
+            val distance = (camera.worldPosition - worldPosition).length()
+            renderable.material.setFloat3(MaterialFactory.MATERIAL_COLOR, distance.distanceToColor())
+
+            if (distance < 0.3) {
+                // WITHOUT animation
+                // localPosition += camera.forward * 0.3f
+
+                // WITH animation
+                localPositionAnimator(camera.forward).apply { duration = 500 }.start()
+            }
+        }
     }
 }
 
