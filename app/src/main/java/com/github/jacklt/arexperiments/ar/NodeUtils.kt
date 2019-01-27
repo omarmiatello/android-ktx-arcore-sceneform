@@ -1,9 +1,12 @@
 package com.github.jacklt.arexperiments.ar
 
+import android.animation.ObjectAnimator
+import com.github.jacklt.arexperiments.generic.logD
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
+import com.google.ar.sceneform.rendering.Renderable
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
@@ -22,11 +25,10 @@ fun Node.addOnUpdateInMills(onUpdate: (Long) -> Unit) {
 }
 
 fun Node.localPositionAnimator(vararg values: Vector3) = vectorAnimator(
-    localPosition,
-    *values.map {
-        localPosition + it
-    }.toTypedArray()
+    "localPosition",
+    arrayOf(localPosition, *values)
 ).apply {
+    logD("localPositionAnimator: $localPosition ${values.toList()}")
     target = this@localPositionAnimator
 }
 
@@ -35,3 +37,13 @@ fun Float.distanceToColor() = Color(
     1f - (abs(this - 0.5f) * 3f - 0.2f).coerceIn(0f..1f),
     1f - (abs(this - 1f) * 3f - 0.2f).coerceIn(0f..1f)
 )
+
+class NodeAnimated : Node() {
+    var currentMovement = ObjectAnimator()
+    var currentDirection = Vector3.forward()
+}
+
+fun Renderable.noShadow() = apply {
+    isShadowCaster = false
+    isShadowReceiver = false
+}

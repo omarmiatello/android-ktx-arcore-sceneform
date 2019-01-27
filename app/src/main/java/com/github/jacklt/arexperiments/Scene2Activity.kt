@@ -1,9 +1,6 @@
 package com.github.jacklt.arexperiments
 
-import com.github.jacklt.arexperiments.ar.addOnUpdateInMills
-import com.github.jacklt.arexperiments.ar.distanceToColor
-import com.github.jacklt.arexperiments.ar.localPositionAnimator
-import com.github.jacklt.arexperiments.ar.minus
+import com.github.jacklt.arexperiments.ar.*
 import com.github.jacklt.arexperiments.generic.SceneformActivity
 import com.google.ar.sceneform.NodeParent
 import com.google.ar.sceneform.math.Vector3
@@ -17,7 +14,7 @@ class Scene2Activity : SceneformActivity() {
         arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
             hitResult.anchorNode {
                 transformableNode {
-                    parallelPlanes(1f, 0.8f, 1f, 0.01f, material(Color(0f, 0f, 1f, .2f)))
+                    walls(1f, 0.8f, 1f, 0.01f, material(Color(0f, 0f, 1f, .2f)))
                     ball(material(Color(1f, 0f, 0f))).apply {
                         localPosition = Vector3(0f, .3f, 0f)
                     }
@@ -26,31 +23,23 @@ class Scene2Activity : SceneformActivity() {
         }
     }
 
-    private suspend fun NodeParent.parallelPlanes(
+    private suspend fun NodeParent.walls(
         width: Float,
         height: Float,
         depth: Float,
         thick: Float,
         material: Material
-    ) = node {
-        // left
-        node().renderable = ShapeFactory
-            .makeCube(Vector3(thick, height, depth), Vector3((thick - width) / 2, height / 2, 0f), material)
-            .apply {
-                isShadowCaster = false
-                isShadowReceiver = false
-            }
+    ) = node("walls") {
+        node("wall left").renderable = ShapeFactory
+            .makeCube(Vector3(thick, height, depth), Vector3((thick - width) / 2, 0f, 0f), material).noShadow()
 
-        // right
-        node().renderable = ShapeFactory
-            .makeCube(Vector3(thick, height, depth), Vector3((width - thick) / 2, height / 2, 0f), material)
-            .apply {
-                isShadowCaster = false
-                isShadowReceiver = false
-            }
+        node("wall right").renderable = ShapeFactory
+            .makeCube(Vector3(thick, height, depth), Vector3((width - thick) / 2, 0f, 0f), material).noShadow()
+
+        localPosition = Vector3(0f, height / 2, 0f)
     }
 
-    private suspend fun NodeParent.ball(red: Material) = node {
+    private suspend fun NodeParent.ball(red: Material) = node("ball") {
         renderable = ShapeFactory.makeSphere(0.01f, Vector3(0.0f, 0.0f, 0.0f), red)
 
         val camera = arSceneView.scene.camera
@@ -63,7 +52,7 @@ class Scene2Activity : SceneformActivity() {
                 // localPosition += camera.forward * 0.3f
 
                 // WITH animation
-                localPositionAnimator(camera.forward).apply { duration = 500 }.start()
+                localPositionAnimator(localPosition + camera.forward).apply { duration = 500 }.start()
             }
         }
     }

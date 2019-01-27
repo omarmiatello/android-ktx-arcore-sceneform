@@ -30,25 +30,23 @@ class Scene1Activity : SceneformActivity() {
         depth: Float,
         thick: Float,
         material: Material
-    ) = node {
-        // left
-        node().renderable = ShapeFactory
-            .makeCube(Vector3(thick, height, depth), Vector3((thick - width) / 2, height / 2, 0f), material)
+    ) = node("box") {
+        node("left").renderable = ShapeFactory
+            .makeCube(Vector3(thick, height, depth), Vector3((thick - width) / 2, 0f, 0f), material)
 
-        // right
-        node().renderable = ShapeFactory
-            .makeCube(Vector3(thick, height, depth), Vector3((width - thick) / 2, height / 2, 0f), material)
+        node("right").renderable = ShapeFactory
+            .makeCube(Vector3(thick, height, depth), Vector3((width - thick) / 2, 0f, 0f), material)
 
-        // top
-        node().renderable = ShapeFactory
-            .makeCube(Vector3(width, height, thick), Vector3(0.0f, height / 2, (thick - depth) / 2), material)
+        node("forward").renderable = ShapeFactory
+            .makeCube(Vector3(width, height, thick), Vector3(0f, 0f, (thick - depth) / 2), material)
 
-        // bottom
-        node().renderable = ShapeFactory
-            .makeCube(Vector3(width, height, thick), Vector3(0.0f, height / 2, (depth - thick) / 2), material)
+        node("back").renderable = ShapeFactory
+            .makeCube(Vector3(width, height, thick), Vector3(0f, 0f, (depth - thick) / 2), material)
+
+        localPosition = Vector3(0f, height / 2, 0f)
     }
 
-    private suspend fun NodeParent.ball(red: Material) = node {
+    private suspend fun NodeParent.ball(red: Material) = node("ball") {
         renderable = ShapeFactory.makeSphere(0.01f, Vector3(0.0f, 0.01f, 0.0f), red)
 
         val xMax = (0.1f - (0.01f * 2) - (0.01f * 2)) / 2

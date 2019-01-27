@@ -29,6 +29,11 @@ class MainActivity : AppCompatActivity() {
                     "Scene 3",
                     "camera: ball at fixed distance",
                     ref = Scene3Activity::class.java
+                ),
+                SimpleItem(
+                    "Scene 4",
+                    "onTapArPlane: game pong like",
+                    ref = Scene4Activity::class.java
                 )
             )
         ) { _, item -> startActivity(Intent(this, item.ref as Class<*>)) }

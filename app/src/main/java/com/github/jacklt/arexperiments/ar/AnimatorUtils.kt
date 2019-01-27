@@ -30,16 +30,15 @@ class FloatAnimator private constructor(val valueAnimator: ValueAnimator) {
 inline fun floatAnimator(vararg values: Float, noinline init: ValueAnimator.() -> Unit = {}) =
     FloatAnimator.from(values, init)
 
-fun vectorAnimator(vararg values: Vector3, property: String = "localPosition") = ObjectAnimator().apply {
+fun vectorAnimator(property: String, values: Array<Vector3>) = ObjectAnimator().apply {
     setObjectValues(*values)
     propertyName = property
-    setEvaluator(Vector3Evaluator())
-
     interpolator = LinearInterpolator()
+    setEvaluator(Vector3Evaluator())
     setAutoCancel(true)
 }
 
-fun quaternionAnimator(vararg values: Quaternion, property: String = "localRotation") = ObjectAnimator().apply {
+fun quaternionAnimator(property: String, values: Array<Quaternion>) = ObjectAnimator().apply {
     setObjectValues(*values)
     propertyName = property
     setEvaluator(QuaternionEvaluator())
