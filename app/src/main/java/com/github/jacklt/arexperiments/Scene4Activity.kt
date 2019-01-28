@@ -33,7 +33,7 @@ class Scene4Activity : SceneformActivity() {
 
                     walls(1f, .8f, 1.5f, 0.01f, material(Color(0f, 0f, 1f, .2f)))
 
-                    val ball = ball(material(Color(1f, 0f, 0f))).apply { localPosition = Vector3(0f, .3f, 0f) }
+                    val ball = ball(.015f, material(Color(1f, 0f, 0f))).apply { localPosition = Vector3(0f, .3f, 0f) }
 
                     // Game mechanics
 
@@ -142,9 +142,8 @@ class Scene4Activity : SceneformActivity() {
         localPosition = Vector3(0f, height / 2, 0f)
     }
 
-    private suspend fun NodeParent.ball(red: Material) = nodeAnimated("ball") {
-        val ballRadius = .015f
-        renderable = ShapeFactory.makeSphere(ballRadius, Vector3(0f, 0f, 0f), red)
+    private suspend fun NodeParent.ball(radius: Float, material: Material) = nodeAnimated("ball") {
+        renderable = ShapeFactory.makeSphere(radius, Vector3(0f, 0f, 0f), material)
 
         currentDirection =
             (Vector3.forward() * Random.nextFloat() + Vector3.right() * Random.nextFloat() + Vector3.up() * Random.nextFloat())

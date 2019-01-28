@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -15,33 +16,46 @@
             type="com.github.jacklt.arexperiments.generic.SimpleItemHandler" />
     </data>
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:gravity="center"
-        android:minHeight="?android:listPreferredItemHeight"
-        android:onClick="@{(v) -> handler.onClick(v, item)}"
-        android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingTop="4dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="4dp">
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="16dp">
 
-        <TextView
-            style="@style/TextAppearance.AppCompat.Menu"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{item.title}"
-            android:visibility="@{item.title != null ? View.VISIBLE : View.GONE}"
-            tools:text="Title" />
+            android:layout_gravity="bottom"
+            android:background="?selectableItemBackground"
+            android:gravity="center"
+            android:minHeight="?android:listPreferredItemHeight"
+            android:onClick="@{(v) -> handler.onClick(v, item)}"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="4dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="4dp"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
 
-        <TextView
-            style="@style/TextAppearance.AppCompat.Body1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{item.description}"
-            android:visibility="@{item.description != null ? View.VISIBLE : View.GONE}"
-            tools:text="Description" />
-    </LinearLayout>
+            <TextView
+                style="@style/TextAppearance.AppCompat.Menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{item.title}"
+                android:visibility="@{item.title != null ? View.VISIBLE : View.GONE}"
+                tools:text="Title" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{item.description}"
+                android:visibility="@{item.description != null ? View.VISIBLE : View.GONE}"
+                tools:text="Description" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

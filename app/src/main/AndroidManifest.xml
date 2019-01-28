@@ -41,6 +41,7 @@
         <activity android:name=".Scene2Activity" />
         <activity android:name=".Scene3Activity" />
         <activity android:name=".Scene4Activity" />
+        <activity android:name=".Scene5Activity" />
 
         <!-- Indicates that app requires ARCore ("AR Required"). Causes Google
              Play Store to download and install ARCore when the app is installed.
