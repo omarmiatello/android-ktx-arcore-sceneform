@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 ),
                 SimpleItem(
                     "Scene 5 (Work in progress)",
-                    "onTapArPlane: game pong like v2",
+                    "onTapArPlane: materials experiment (+ game pong)",
                     ref = Scene5Activity::class.java
                 )
             )

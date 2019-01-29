@@ -2,6 +2,7 @@ package com.github.jacklt.arexperiments.ar
 
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import kotlin.random.Random
 
 
 // Vector3 extensions
@@ -17,6 +18,11 @@ fun Vector3.reflect(normal: Vector3): Vector3 {
     // R = I - (2 * N * ( DotProduct[I,N] ))
 
     return this - normal * 2f * Vector3.dot(this, normal)
+}
+
+fun randomVector3normalized(): Vector3 {
+    fun rnd() = Random.nextFloat() * if (Random.nextBoolean()) 1 else -1
+    return (Vector3.forward() * rnd() + Vector3.right() * rnd() + Vector3.up() * rnd()).normalized()
 }
 
 

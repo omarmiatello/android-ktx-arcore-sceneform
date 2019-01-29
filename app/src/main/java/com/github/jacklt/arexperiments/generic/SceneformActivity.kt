@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.jacklt.arexperiments.R
 import com.github.jacklt.arexperiments.ar.NodeAnimated
+import com.github.jacklt.arexperiments.ar.setColor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Pose
 import com.google.ar.sceneform.AnchorNode
@@ -20,6 +21,7 @@ import kotlin.coroutines.*
 
 
 abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
+
     protected lateinit var job: Job
         private set
 
@@ -31,6 +33,9 @@ abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
+
+    private var cacheOpaqueColor: Material? = null
+    private var cacheTransparentColor: Material? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,49 +62,50 @@ abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
     suspend fun View.toViewRenderable(builder: (ViewRenderable.Builder) -> Unit = {}) =
         ViewRenderable.builder().setView(context, this).also(builder).build().await()
 
-    suspend fun material(color: Color): Material =
-        if (color.a == 1f) {
-            MaterialFactory.makeOpaqueWithColor(this, color).await()
-        } else {
-            MaterialFactory.makeTransparentWithColor(this, color).await()
-        }
+
+    suspend fun material(color: Color) = if (color.a == 1f) {
+        cacheOpaqueColor
+            ?.let { it.makeCopy().apply { setColor(color) } }
+            ?: MaterialFactory.makeOpaqueWithColor(this, color).await()
+                .also { cacheOpaqueColor = it.makeCopy() }
+    } else {
+        cacheTransparentColor
+            ?.let { it.makeCopy().apply { setColor(color) } }
+            ?: MaterialFactory.makeTransparentWithColor(this, color).await()
+                .also { cacheTransparentColor = it.makeCopy() }
+    }
 
     suspend fun material(texture: Texture): Material = TODO()
 
-    fun Pose.anchorNode(init: suspend AnchorNode.() -> Unit): AnchorNode {
-        return AnchorNode(arSceneView.session.createAnchor(this)).apply {
+    fun Pose.anchorNode(init: suspend AnchorNode.() -> Unit) =
+        AnchorNode(arSceneView.session.createAnchor(this)).apply {
             setParent(arSceneView.scene)
             launch { init(this@apply) }
         }
-    }
 
-    fun HitResult.anchorNode(init: suspend AnchorNode.() -> Unit): AnchorNode {
-        return AnchorNode(createAnchor()).apply {
+    fun HitResult.anchorNode(init: suspend AnchorNode.() -> Unit) =
+        AnchorNode(createAnchor()).apply {
             setParent(arSceneView.scene)
             launch { init(this@apply) }
         }
-    }
 
-    suspend fun AnchorNode.transformableNode(init: suspend TransformableNode.() -> Unit): TransformableNode {
-        return TransformableNode(arFragment.transformationSystem).apply {
+    suspend fun AnchorNode.transformableNode(init: suspend TransformableNode.() -> Unit) =
+        TransformableNode(arFragment.transformationSystem).apply {
             setParent(this@transformableNode)
             coroutineScope { init(this@apply) }
         }
-    }
 
-    suspend fun NodeParent.node(name: String? = null, init: suspend Node.() -> Unit = {}): Node {
-        return Node().apply {
+    suspend fun NodeParent.node(name: String? = null, init: suspend Node.() -> Unit = {}) =
+        Node().apply {
             if (name != null) setName(name)
             setParent(this@node)
             coroutineScope { init(this@apply) }
         }
-    }
 
-    suspend fun NodeParent.nodeAnimated(name: String? = null, init: suspend NodeAnimated.() -> Unit = {}): NodeAnimated {
-        return NodeAnimated().apply {
+    suspend fun NodeParent.nodeAnimated(name: String? = null, init: suspend NodeAnimated.() -> Unit = {}) =
+        NodeAnimated().apply {
             if (name != null) setName(name)
             setParent(this@nodeAnimated)
             coroutineScope { init(this@apply) }
         }
-    }
 }
