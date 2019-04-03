@@ -78,7 +78,7 @@ abstract class SceneformActivity : AppCompatActivity(), CoroutineScope {
     suspend fun material(texture: Texture): Material = TODO()
 
     fun Pose.anchorNode(init: suspend AnchorNode.() -> Unit) =
-        AnchorNode(arSceneView.session.createAnchor(this)).apply {
+        AnchorNode(arSceneView.session!!.createAnchor(this)).apply {
             setParent(arSceneView.scene)
             launch { init(this@apply) }
         }

@@ -10,6 +10,15 @@
     -->
     <uses-feature android:name="android.hardware.camera.ar" />
 
+
+    <!-- Required for Nearby Connections -->
+    <!-- https://developers.google.com/nearby/connections/android/get-started -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <dist:module dist:instant="true"/>
 
     <application
@@ -42,6 +51,7 @@
         <activity android:name=".Scene3Activity" />
         <activity android:name=".Scene4Activity" />
         <activity android:name=".Scene5Activity" />
+        <activity android:name=".Scene6Activity" />
 
         <!-- Indicates that app requires ARCore ("AR Required"). Causes Google
              Play Store to download and install ARCore when the app is installed.

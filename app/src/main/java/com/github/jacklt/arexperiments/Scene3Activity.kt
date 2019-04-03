@@ -18,11 +18,11 @@ class Scene3Activity : SceneformActivity() {
         val camera = arSceneView.scene.camera
         var balls: Node? = null
         arSceneView.scene.addOnUpdateListener {
-            if (arSceneView.arFrame.camera.trackingState != TrackingState.TRACKING) return@addOnUpdateListener
+            if (arSceneView.arFrame!!.camera.trackingState != TrackingState.TRACKING) return@addOnUpdateListener
 
             // Place the anchor 50cm in front of the camera.
             when {
-                arSceneView.session.allAnchors.isEmpty() -> {
+                arSceneView.session!!.allAnchors.isEmpty() -> {
                     val pos = floatArrayOf(0f, 0f, -.05f)
                     val rotation = floatArrayOf(0f, 0f, 0f, 1f)
                     Pose(pos, rotation).anchorNode {

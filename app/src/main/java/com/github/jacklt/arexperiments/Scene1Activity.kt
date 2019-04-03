@@ -60,7 +60,7 @@ class Scene1Activity : SceneformActivity() {
         val camera = arSceneView.scene.camera
         addOnUpdateInMills {
             val distance = (camera.worldPosition - worldPosition).length()
-            renderable.material.setFloat3(MaterialFactory.MATERIAL_COLOR, distance.distanceToColor())
+            renderable!!.material.setFloat3(MaterialFactory.MATERIAL_COLOR, distance.distanceToColor())
             localPosition = Vector3(xAnim.value(it), yAnim.value(it), zAnim.value(it))
         }
     }

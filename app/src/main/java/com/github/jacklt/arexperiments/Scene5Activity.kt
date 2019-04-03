@@ -29,11 +29,11 @@ class Scene5Activity : SceneformActivity() {
                     // Game mechanics
                     var lastNodeDirection: Node? = null
                     addOnUpdateInMills {
-                        val cameraDistance = (scene.camera.worldPosition - ball.worldPosition).length()
+                        val cameraDistance = (scene!!.camera.worldPosition - ball.worldPosition).length()
                         if (cameraDistance < 0.3) {
                             ball.currentMovement.cancel()
                             lastNodeDirection = null
-                            ball.currentDirection = worldToLocalDirection(scene.camera.forward)
+                            ball.currentDirection = worldToLocalDirection(scene!!.camera.forward)
                         }
 
                         if (!ball.currentMovement.isRunning) {
@@ -51,7 +51,7 @@ class Scene5Activity : SceneformActivity() {
                                 ).normalized()
                             }
                             val hitTest =
-                                scene.hitTestAll(Ray(ball.worldPosition, localToWorldDirection(ball.currentDirection)))
+                                scene!!.hitTestAll(Ray(ball.worldPosition, localToWorldDirection(ball.currentDirection)))
                                     .firstOrNull { it.node != ball && it.node != lastNodeDirection }
                             if (hitTest != null) {
                                 lastNodeDirection = hitTest.node
@@ -97,8 +97,8 @@ class Scene5Activity : SceneformActivity() {
         currentDirection = randomVector3normalized()
 
         addOnUpdateInMills {
-            val cameraDistance = (scene.camera.worldPosition - worldPosition).length()
-            renderable.material.setFloat3(MaterialFactory.MATERIAL_COLOR, cameraDistance.distanceToColor())
+            val cameraDistance = (scene!!.camera.worldPosition - worldPosition).length()
+            renderable!!.material.setFloat3(MaterialFactory.MATERIAL_COLOR, cameraDistance.distanceToColor())
         }
     }
 }

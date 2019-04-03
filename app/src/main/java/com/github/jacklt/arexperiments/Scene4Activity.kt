@@ -39,12 +39,12 @@ class Scene4Activity : SceneformActivity() {
 
                     var lastNodeDirection: Node? = null
                     addOnUpdateInMills {
-                        val cameraDistance = (scene.camera.worldPosition - ball.worldPosition).length()
+                        val cameraDistance = (scene!!.camera.worldPosition - ball.worldPosition).length()
                         if (cameraDistance < 0.3) {
                             logD("ball -> camera distance: $cameraDistance")
                             ball.currentMovement.cancel()
                             lastNodeDirection = null
-                            ball.currentDirection = worldToLocalDirection(scene.camera.forward)
+                            ball.currentDirection = worldToLocalDirection(scene!!.camera.forward)
                         }
 
                         if (!ball.currentMovement.isRunning) {
@@ -67,9 +67,9 @@ class Scene4Activity : SceneformActivity() {
                                     }
                                 ).normalized()
                             }
-                            val hitTest =
-                                scene.hitTestAll(Ray(ball.worldPosition, localToWorldDirection(ball.currentDirection)))
-                                    .firstOrNull { it.node != ball && it.node != lastNodeDirection }
+                            val hitTest = scene!!.hitTestAll(
+                                Ray(ball.worldPosition, localToWorldDirection(ball.currentDirection))
+                            ).firstOrNull { it.node != ball && it.node != lastNodeDirection }
                             if (hitTest != null) {
                                 lastNodeDirection = hitTest.node
                                 val point = worldToLocalPoint(hitTest.point)
@@ -150,8 +150,8 @@ class Scene4Activity : SceneformActivity() {
                 .normalized()
 
         addOnUpdateInMills {
-            val cameraDistance = (scene.camera.worldPosition - worldPosition).length()
-            renderable.material.setFloat3(MaterialFactory.MATERIAL_COLOR, cameraDistance.distanceToColor())
+            val cameraDistance = (scene!!.camera.worldPosition - worldPosition).length()
+            renderable!!.material.setFloat3(MaterialFactory.MATERIAL_COLOR, cameraDistance.distanceToColor())
         }
     }
 }
